@@ -21,7 +21,9 @@ public class Id {
     }
         
     public static Id withoutId(){
-        return new Id(UUID.randomUUID());
+        /* Este método genera un UUID versión 7 utilizando la marca de tiempo y 
+        un componente aleatorio, garantizando unicidad y orden cronológico */
+        return new Id(UUID.randomUUID(UUID.Version.V7));
     }
 
 }
