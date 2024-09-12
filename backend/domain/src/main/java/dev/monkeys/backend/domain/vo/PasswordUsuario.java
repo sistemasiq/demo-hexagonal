@@ -1,3 +1,4 @@
+package dev.monkeys.backend.domain.vo;
 public record PasswordUsuario(String value) {
 
     public PasswordUsuario{
