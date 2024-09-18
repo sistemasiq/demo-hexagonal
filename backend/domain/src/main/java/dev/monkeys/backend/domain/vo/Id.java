@@ -1,7 +1,7 @@
 package dev.monkeys.backend.domain.vo;
 
-import java.time.Instant;
-import java.util.Random;
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Id {
 
+    private static final SecureRandom random = new SecureRandom();
     private final UUID id;
 
     private Id(UUID id){
@@ -23,20 +24,30 @@ public class Id {
     }
    
     public static Id withoutId() {
-        /* Este método genera un UUID versión 7 utilizando la marca de tiempo y 
-        un componente aleatorio, garantizando unicidad y orden cronológico */
+        byte[] value = randomBytes();
+        ByteBuffer buf = ByteBuffer.wrap(value);
+        long high = buf.getLong();
+        long low = buf.getLong();
+        return new Id(new UUID(high, low));
+    }
 
-        long time = Instant.now().toEpochMilli();  // Marca de tiempo en milisegundos
-        long mostSigBits = time << 16;  // Dejar espacio para los bits de la versión
-        mostSigBits |= (7 << 12);  // Establecer la versión 7
+     public static byte[] randomBytes() {
+        // random bytes
+        byte[] value = new byte[16];
+        random.nextBytes(value);
 
-        Random random = new Random();
-        long leastSigBits = random.nextLong();  // Bits menos significativos (aleatorios)
+        // current timestamp in ms
+        ByteBuffer timestamp = ByteBuffer.allocate(Long.BYTES);
+        timestamp.putLong(System.currentTimeMillis());
 
-        // El UUID tiene 128 bits; completar los bits más significativos con valores aleatorios
-        mostSigBits |= (random.nextLong() & 0x000000000000FFFFL);
+        // timestamp
+        System.arraycopy(timestamp.array(), 2, value, 0, 6);
 
-        return new Id(new UUID(mostSigBits, leastSigBits));
+        // version and variant
+        value[6] = (byte) ((value[6] & 0x0F) | 0x70);
+        value[8] = (byte) ((value[8] & 0x3F) | 0x80);
+
+        return value;
     }
 
 }
