@@ -3,6 +3,7 @@ package dev.monkeys.backend.domain.vo;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.UUID;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -15,14 +16,15 @@ public class Id {
     private static final SecureRandom random = new SecureRandom();
     private final UUID id;
 
-    private Id(UUID id){
-        this.id = id;
+    private Id(UUID id) {
+        ValidUUIDv7(id);
+        this.id = id; 
     }
 
-    public static Id withId(String id){
+    public static Id withId(String id) {
         return new Id(UUID.fromString(id));
     }
-   
+
     public static Id withoutId() {
         byte[] value = randomBytes();
         ByteBuffer buf = ByteBuffer.wrap(value);
@@ -31,7 +33,7 @@ public class Id {
         return new Id(new UUID(high, low));
     }
 
-     public static byte[] randomBytes() {
+    public static byte[] randomBytes() {
         // random bytes
         byte[] value = new byte[16];
         random.nextBytes(value);
@@ -50,4 +52,18 @@ public class Id {
         return value;
     }
 
+    private void ValidUUIDv7(UUID uuid) {
+        if (7 != uuid.version())
+            throw new IllegalArgumentException("Version " + uuid.version() + " del UUID invalida");
+
+        // Verificar que la variante es correcta (2)
+        if (2 != uuid.variant())
+            throw new IllegalArgumentException("Variante " + uuid.variant() + " del UUID invalida");
+
+        // Verificar que los últimos bits son aleatorios
+        // Esto es una comprobación simplificada, ya que no podemos predecir los bits
+        // aleatorios
+        if (0 == (uuid.getLeastSignificantBits() & 0xFFFF))
+            throw new IllegalArgumentException("Bits del UUID invalidos");
+    }
 }
