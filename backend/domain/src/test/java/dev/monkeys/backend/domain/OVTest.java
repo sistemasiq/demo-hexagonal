@@ -26,7 +26,7 @@ public class OVTest {
 
         @Test
         void constructor_shouldAcceptValidPassword() {
-            assertDoesNotThrow(() -> new PasswordUsuario("SecurePass123"));
+            assertDoesNotThrow(() -> new PasswordUsuario("SecurePass123#"));
         }
 
         @Test

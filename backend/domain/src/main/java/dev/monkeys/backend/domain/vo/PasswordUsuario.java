@@ -13,7 +13,7 @@ public record PasswordUsuario(String value) {
         String upperCasePattern = ".*[A-Z].*";
         String lowerCasePattern = ".*[a-z].*";
         String digitPattern = ".*\\d.*";
-        String specialCharPattern = ".*[!@#$%^&*()_+\\-=[\\]{};':\"\\\\|,.<>/?].*";
+        String specialCharPattern = ".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*" ;
 
         if (value == null || value.length() < minLength) {
             return false;
@@ -27,11 +27,10 @@ public record PasswordUsuario(String value) {
         if (!value.matches(digitPattern)) {
             return false;
         }
-        /* 
+         
         if (!value.matches(specialCharPattern)) {
-            System.out.println("fallo especiales");
             return false;
-        }*/
+        }
         
         // Si todas las condiciones se cumplen, la contraseña es segura
         return true;
