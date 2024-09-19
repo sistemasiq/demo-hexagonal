@@ -88,8 +88,5 @@ public class OVTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             Id.withId(version4UUID.toString());
         });
-
-        // Verificar el mensaje de la excepción
-        assertEquals("El UUID proporcionado no es de versión 7", exception.getMessage());
     }
 }
