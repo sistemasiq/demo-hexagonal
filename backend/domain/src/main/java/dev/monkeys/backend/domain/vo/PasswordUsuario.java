@@ -1,9 +1,11 @@
 package dev.monkeys.backend.domain.vo;
 public record PasswordUsuario(String value) {
 
+    static String error;
+
     public PasswordUsuario{
         if ( !esSeguro(value) ) {
-            throw new IllegalArgumentException("La contraseña no es segura");
+            throw new IllegalArgumentException("La contraseña no es segura. " + error);
         }
     }
 
@@ -16,19 +18,24 @@ public record PasswordUsuario(String value) {
         String specialCharPattern = ".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*" ;
 
         if (value == null || value.length() < minLength) {
+            error = "El password debe tener al menos 8 caracteres";
             return false;
         }
         if (!value.matches(upperCasePattern)) {
+            error = "El password debe tener al menos una Mayúscula";
             return false;
         }
         if (!value.matches(lowerCasePattern)) {
+            error = "El password debe tener al menos una Mínuscula";
             return false;
         }
         if (!value.matches(digitPattern)) {
+            error = "El password debe tener al menos un numero";
             return false;
         }
          
         if (!value.matches(specialCharPattern)) {
+            error = "El password debe tener al menos un caracter especial";
             return false;
         }
         

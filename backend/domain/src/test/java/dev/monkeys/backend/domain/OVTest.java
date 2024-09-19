@@ -1,6 +1,7 @@
 package dev.monkeys.backend.domain;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -44,7 +45,7 @@ public class OVTest {
         assertThrows(IllegalArgumentException.class, () -> new PasswordUsuario(null));
     }
 
-    @Test
+    @RepeatedTest(100)
     void generate_shouldReturnUniqueIds() {
         Id id1 = Id.withoutId();
         Id id2 = Id.withoutId();
