@@ -15,13 +15,16 @@ public class Id {
 
     private static final SecureRandom random = new SecureRandom();
     private final UUID id;
+    private String error;
 
     private Id(UUID id) {
-        ValidUUIDv7(id);
-        this.id = id; 
+        if (!ValidUUIDv7(id)) {
+            throw new IllegalArgumentException(this.error);
+        }
+        this.id = id;
     }
 
-    public static Id withId(String id){
+    public static Id withId(String id) {
         UUID uuid = UUID.fromString(id);
         return new Id(uuid);
     }
@@ -53,18 +56,25 @@ public class Id {
         return value;
     }
 
-    private void ValidUUIDv7(UUID uuid) {
-        if (7 != uuid.version())
-            throw new IllegalArgumentException("Version " + uuid.version() + " del UUID invalida");
+    private boolean ValidUUIDv7(UUID uuid) {
+        if (uuid.version() != 7) {
+            error = "Version " + uuid.version() + " del UUID invalida";
+            return false;
+        }
 
         // Verificar que la variante es correcta (2)
-        if (2 != uuid.variant())
-            throw new IllegalArgumentException("Variante " + uuid.variant() + " del UUID invalida");
+        if (uuid.variant() != 2) {
+            error = "Variante " + uuid.variant() + " del UUID invalida";
+            return false;
+        }
 
         // Verificar que los últimos bits son aleatorios
         // Esto es una comprobación simplificada, ya que no podemos predecir los bits
         // aleatorios
-        if (0 == (uuid.getLeastSignificantBits() & 0xFFFF))
-            throw new IllegalArgumentException("Bits del UUID invalidos");
+        if ((uuid.getLeastSignificantBits() & 0xFFFF) == 0) {
+            error = "Bits del UUID invalidos";
+            return false;
+        }
+        return true;
     }
 }
