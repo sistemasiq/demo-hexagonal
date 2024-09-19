@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import dev.monkeys.backend.domain.vo.Id;
 import dev.monkeys.backend.domain.vo.NombreUsuario;
 import dev.monkeys.backend.domain.vo.PasswordUsuario;
+import dev.monkeys.backend.domain.vo.StatusUsuario;
 
 public class OVTest {
     @Test
@@ -64,13 +66,6 @@ public class OVTest {
     }
 
     @Test
-    void constructor_shouldNotAcceptInvalidUUIDv7() {
-        UUID uuid = UUID.randomUUID();
-        assertThrows(IllegalArgumentException.class, () -> Id.withId(uuid.toString()));
-    }
-    
-
-    @Test
     void withId_shouldAcceptVersion7UUID() {
         // Crear un UUID de versión 7 válido
         UUID version7UUID = UUID.fromString("7f84b243-7796-7def-9877-c29583c3c31b");
@@ -85,8 +80,49 @@ public class OVTest {
         UUID version4UUID = UUID.randomUUID(); // Esto generará un UUID versión 4
 
         // Debe lanzar IllegalArgumentException para versiones que no son 7
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             Id.withId(version4UUID.toString());
         });
+    }
+
+    @Test
+    void shouldHaveCorrectNumberOfEnumValues() {
+        assertEquals(2, StatusUsuario.values().length);
+    }
+
+    @Test
+    void shouldContainACTIVO() {
+        assertTrue(enumContains(StatusUsuario.values(), "ACTIVO"));
+    }
+
+    @Test
+    void shouldContainINACTIVO() {
+        assertTrue(enumContains(StatusUsuario.values(), "INACTIVO"));
+    }
+
+    @Test
+    void valueOf_shouldReturnCorrectEnum() {
+        assertEquals(StatusUsuario.ACTIVO, StatusUsuario.valueOf("ACTIVO"));
+        assertEquals(StatusUsuario.INACTIVO, StatusUsuario.valueOf("INACTIVO"));
+    }
+
+    @Test
+    void valueOf_shouldThrowForInvalidValue() {
+        assertThrows(IllegalArgumentException.class, () -> StatusUsuario.valueOf("SUSPENDIDO"));
+    }
+
+    @Test
+    void toString_shouldReturnCorrectString() {
+        assertEquals("ACTIVO", StatusUsuario.ACTIVO.toString());
+        assertEquals("INACTIVO", StatusUsuario.INACTIVO.toString());
+    }
+
+    private boolean enumContains(StatusUsuario[] values, String value) {
+        for (StatusUsuario status : values) {
+            if (status.name().equals(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
