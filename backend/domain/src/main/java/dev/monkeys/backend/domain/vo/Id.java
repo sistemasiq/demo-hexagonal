@@ -20,7 +20,13 @@ public class Id {
     }
 
     public static Id withId(String id){
-        return new Id(UUID.fromString(id));
+        UUID uuid = UUID.fromString(id);
+    
+        if (uuid.version() != 7) {
+            throw new IllegalArgumentException("El UUID proporcionado no es de versión 7");
+        }
+        
+        return new Id(uuid);
     }
    
     public static Id withoutId() {
