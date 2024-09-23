@@ -15,8 +15,28 @@ import dev.monkeys.backend.domain.vo.Id;
 import dev.monkeys.backend.domain.vo.NombreUsuario;
 import dev.monkeys.backend.domain.vo.PasswordUsuario;
 import dev.monkeys.backend.domain.vo.StatusUsuario;
+import dev.monkeys.backend.domain.vo.TipoRol;
 
 public class OVTest {
+
+    private boolean enumContains(StatusUsuario[] values, String value) {
+        for (StatusUsuario status : values) {
+            if (status.name().equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean enumContains(TipoRol[] values, String value) {
+        for (TipoRol status : values) {
+            if (status.name().equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Test
     void constructor_shouldAcceptValidUsername() {
         assertDoesNotThrow(() -> new NombreUsuario("devmonkey"));
@@ -117,12 +137,35 @@ public class OVTest {
         assertEquals("INACTIVO", StatusUsuario.INACTIVO.toString());
     }
 
-    private boolean enumContains(StatusUsuario[] values, String value) {
-        for (StatusUsuario status : values) {
-            if (status.name().equals(value)) {
-                return true;
-            }
-        }
-        return false;
+    @Test
+    void shouldHaveCorrectNumberOfTypeTipoRole() {
+        assertEquals(2, TipoRol.values().length);
+    }
+
+    @Test
+    void shouldContainADMIN() {
+        assertTrue(enumContains(TipoRol.values(), "ADMIN"));
+    }
+
+    @Test
+    void shouldContainUSER() {
+        assertTrue(enumContains(TipoRol.values(), "USER"));
+    }
+
+    @Test
+    void valueOf_shouldReturnCorrectEnumOfTypeTipoRole() {
+        assertEquals(TipoRol.ADMIN, TipoRol.valueOf("ADMIN"));
+        assertEquals(TipoRol.USER, TipoRol.valueOf("USER"));
+    }
+
+    @Test
+    void valueOf_shouldThrowForInvalidValueOfTypeTipoRole() {
+        assertThrows(IllegalArgumentException.class, () -> TipoRol.valueOf("SUSPENDIDO"));
+    }
+
+    @Test
+    void toString_shouldReturnCorrectStringOfTypeTipoRole() {
+        assertEquals("ADMIN", TipoRol.ADMIN.toString());
+        assertEquals("USER", TipoRol.USER.toString());
     }
 }
