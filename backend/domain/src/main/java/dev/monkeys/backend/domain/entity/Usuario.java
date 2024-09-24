@@ -20,5 +20,6 @@ public class Usuario {
     NombreUsuario nombre;
     PasswordUsuario password;
     StatusUsuario status;
+    Rol rol;
 
 }

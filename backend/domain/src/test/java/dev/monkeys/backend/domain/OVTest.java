@@ -12,6 +12,7 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import dev.monkeys.backend.domain.vo.Id;
+import dev.monkeys.backend.domain.vo.NombrePermiso;
 import dev.monkeys.backend.domain.vo.NombreUsuario;
 import dev.monkeys.backend.domain.vo.PasswordUsuario;
 import dev.monkeys.backend.domain.vo.StatusUsuario;
@@ -167,5 +168,29 @@ public class OVTest {
     void toString_shouldReturnCorrectStringOfTypeTipoRole() {
         assertEquals("ADMIN", TipoRol.ADMIN.toString());
         assertEquals("USER", TipoRol.USER.toString());
+    }
+
+    @Test
+    void constructor_shouldAcceptValidPermiso() {
+        // Prueba con un permiso válido
+        assertDoesNotThrow(() -> new NombrePermiso("READ"));
+    }
+
+    @Test
+    void constructor_shouldThrowForNullPermiso() {
+        // Prueba con valor nulo
+        assertThrows(IllegalArgumentException.class, () -> new NombrePermiso(null));
+    }
+
+    @Test
+    void constructor_shouldThrowForLowerCasePermiso() {
+        // Prueba con permiso en minúsculas
+        assertThrows(IllegalArgumentException.class, () -> new NombrePermiso("read"));
+    }
+
+    @Test
+    void constructor_shouldThrowForInvalidPermiso() {
+        // Prueba con permiso inválido
+        assertThrows(IllegalArgumentException.class, () -> new NombrePermiso("EXECUTE"));
     }
 }
